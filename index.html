@@ -580,7 +580,7 @@ body{
         /* =========================
            SAVE SETTINGS (FIXED)
         ========================= */
-     function saveSettings(){
+ function saveSettings() {
 
     localStorage.setItem("serverIp",
         document.getElementById("serverIp").value.trim()
@@ -604,26 +604,17 @@ body{
 }
 
 
+        function showStatus(message) {
+    const box = document.getElementById("statusBox");
+    box.innerText = message;
+    box.style.display = "block";
 
-// automatically test server after saving
-checkServer();
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 4000);
 }
         
-        /* =========================
-           STATUS
-        ========================= */
-        function showStatus(message) {
-            const box = document.getElementById("statusBox");
-            box.innerText = message;
-            box.style.display = "block";
-        
-            setTimeout(() => box.style.display = "none", 4000);
-        }
-        
-        /* =========================
-           CHECK SERVER
-        ========================= */
-     async function checkServer() {
+async function checkServer() {
 
     const serverIp = document.getElementById("serverIp").value.trim();
 

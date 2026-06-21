@@ -568,85 +568,95 @@ body{
     <script>
 
 
-  
+   function toggleSettings() {
+            let panel = document.getElementById("settingsPanel");
         
-     function toggleSettings() {
-    const panel = document.getElementById("settingsPanel");
-
-    if (!panel) {
-        console.error("settingsPanel not found");
-        return;
-    }
-
-    panel.classList.toggle("show");
-}
+            if (panel.classList.contains("show")) {
+                panel.classList.remove("show");
+                setTimeout(() => panel.style.display = "none", 300);
+            } else {
+                panel.style.display = "block";
+                setTimeout(() => panel.classList.add("show"), 10);
+            }
+        }
         
         /* =========================
            SAVE SETTINGS (FIXED)
         ========================= */
-function saveSettings() {
+        function saveSettings(){
 
-    localStorage.setItem("serverIp",
-        document.getElementById("serverIp").value.trim()
-    );
+localStorage.setItem(
+    "serverIp",
+    document.getElementById("serverIp").value
+);
 
-    localStorage.setItem("dbUser",
-        document.getElementById("dbUser").value.trim()
-    );
+localStorage.setItem(
+    "dbUser",
+    document.getElementById("dbUser").value
+);
 
-    localStorage.setItem("dbPassword",
-        document.getElementById("dbPassword").value.trim()
-    );
+localStorage.setItem(
+    "dbPassword",
+    document.getElementById("dbPassword").value
+);
 
-    localStorage.setItem("database",
-        document.getElementById("database").value.trim()
-    );
+localStorage.setItem(
+    "database",
+    document.getElementById("database").value
+);
 
-    alert("Settings Saved");
-
-    checkServer();
-}
+alert("Settings Saved");
 
 
-        function showStatus(message) {
-    const box = document.getElementById("statusBox");
-    box.innerText = message;
-    box.style.display = "block";
 
-    setTimeout(() => {
-        box.style.display = "none";
-    }, 4000);
+// automatically test server after saving
+checkServer();
 }
         
-async function checkServer() {
+        /* =========================
+           STATUS
+        ========================= */
+        function showStatus(message) {
+            const box = document.getElementById("statusBox");
+            box.innerText = message;
+            box.style.display = "block";
+        
+            setTimeout(() => box.style.display = "none", 4000);
+        }
+        
+        /* =========================
+           CHECK SERVER
+        ========================= */
+        async function checkServer() {
 
-    const serverIp = document.getElementById("serverIp").value.trim();
+const serverIp = document.getElementById("serverIp").value.trim();
 
-    const url = `http://${serverIp}/webAurumlab/api/connected.php`;
+const url = `http://${serverIp}/web%20Aurumlab/api/connected.php`;
 
-    try {
+try {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            serverIp: serverIp
+        })
+    });
 
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ serverIp })
-        });
+    const text = await response.text();
+    console.log("RAW RESPONSE:", text);
 
-        const data = await response.json();
+    const data = JSON.parse(text);
 
-        showStatus(
-            data.success
-                ? "🟢 SQL SERVER CONNECTED"
-                : "🔴 CONNECTION FAILED"
-        );
+    showStatus(data.success ? "🟢 SQL SERVER CONNECTED" : "🔴 CONNECTION FAILED");
 
-    } catch (err) {
-        console.error(err);
-        showStatus("🔴 SERVER NOT REACHABLE");
-    }
+} catch (err) {
+    console.error(err);
+    showStatus("🔴 SERVER NOT REACHABLE");
 }
+}
+        
         
  /* =========================
              LOGIN (FIXED)

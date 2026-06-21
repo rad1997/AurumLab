@@ -267,22 +267,22 @@ body{
 
 
 .settings-panel{
-    display:none;
-    margin-top:25px;
-    border-top:1px solid rgba(255,255,255,0.15);
-    padding-top:20px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
 
-    /* motion base */
-    opacity:0;
-    transform: translateY(-10px);
     transition: all 0.35s ease;
+
+    margin-top: 20px;
+    border-top:1px solid rgba(212,175,55,0.3);
+    padding-top: 0;
 }
 
-/* WHEN OPEN */
+/* OPEN STATE */
 .settings-panel.show{
-    display:block;
-    opacity:1;
-    transform: translateY(0);
+    max-height: 400px;
+    opacity: 1;
+    padding-top: 15px;
 }
 
 /* INPUTS MOTION */
@@ -543,9 +543,14 @@ body{
                    placeholder="database name">
 
 
-                   <button type="button" class="login-btn" onclick="saveSettings(); checkServer();">
-                    Save & Check Server
-                </button>
+                 <button
+    type="button"
+    class="settings-btn"
+    onclick="toggleSettings()"
+    title="Settings">
+
+    <i class="fa-solid fa-gear"></i>
+</button>
         
         </div>
 
@@ -565,22 +570,21 @@ body{
 
   
         
-        function toggleSettings() {
-            let panel = document.getElementById("settingsPanel");
-        
-            if (panel.classList.contains("show")) {
-                panel.classList.remove("show");
-                setTimeout(() => panel.style.display = "none", 300);
-            } else {
-                panel.style.display = "block";
-                setTimeout(() => panel.classList.add("show"), 10);
-            }
-        }
+     function toggleSettings() {
+    const panel = document.getElementById("settingsPanel");
+
+    if (!panel) {
+        console.error("settingsPanel not found");
+        return;
+    }
+
+    panel.classList.toggle("show");
+}
         
         /* =========================
            SAVE SETTINGS (FIXED)
         ========================= */
- function saveSettings() {
+function saveSettings() {
 
     localStorage.setItem("serverIp",
         document.getElementById("serverIp").value.trim()

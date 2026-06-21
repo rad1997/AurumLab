@@ -562,6 +562,15 @@ body{
     <!-- JAVASCRIPT -->
     <script>
 
+
+        function getAPIBase() {
+    const serverIp = localStorage.getItem("serverIp");
+
+    if (!serverIp) return null;
+
+    return `http://${serverIp}/webAurumlab/api`;
+}
+        
         function toggleSettings() {
             let panel = document.getElementById("settingsPanel");
         
@@ -577,29 +586,28 @@ body{
         /* =========================
            SAVE SETTINGS (FIXED)
         ========================= */
-        function saveSettings(){
+     function saveSettings(){
 
-localStorage.setItem(
-    "serverIp",
-    document.getElementById("serverIp").value
-);
+    localStorage.setItem("serverIp",
+        document.getElementById("serverIp").value.trim()
+    );
 
-localStorage.setItem(
-    "dbUser",
-    document.getElementById("dbUser").value
-);
+    localStorage.setItem("dbUser",
+        document.getElementById("dbUser").value.trim()
+    );
 
-localStorage.setItem(
-    "dbPassword",
-    document.getElementById("dbPassword").value
-);
+    localStorage.setItem("dbPassword",
+        document.getElementById("dbPassword").value.trim()
+    );
 
-localStorage.setItem(
-    "database",
-    document.getElementById("database").value
-);
+    localStorage.setItem("database",
+        document.getElementById("database").value.trim()
+    );
 
-alert("Settings Saved");
+    alert("Settings Saved");
+
+    checkServer();
+}
 
 
 
@@ -621,55 +629,58 @@ checkServer();
         /* =========================
            CHECK SERVER
         ========================= */
-        async function checkServer() {
+     async function checkServer() {
 
-const serverIp = document.getElementById("serverIp").value.trim();
+    const serverIp = document.getElementById("serverIp").value.trim();
 
-const url = `http://${serverIp}/web%20Aurumlab/api/connected.php`;
+    const url = `http://${serverIp}/webAurumlab/api/connected.php`;
 
-try {
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            serverIp: serverIp
-        })
-    });
+    try {
 
-    const text = await response.text();
-    console.log("RAW RESPONSE:", text);
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ serverIp })
+        });
 
-    const data = JSON.parse(text);
+        const data = await response.json();
 
-    showStatus(data.success ? "🟢 SQL SERVER CONNECTED" : "🔴 CONNECTION FAILED");
+        showStatus(
+            data.success
+                ? "🟢 SQL SERVER CONNECTED"
+                : "🔴 CONNECTION FAILED"
+        );
 
-} catch (err) {
-    console.error(err);
-    showStatus("🔴 SERVER NOT REACHABLE");
-}
+    } catch (err) {
+        console.error(err);
+        showStatus("🔴 SERVER NOT REACHABLE");
+    }
 }
         
  /* =========================
              LOGIN (FIXED)
   ========================= */
   
-  document.getElementById("loginForm")
+document.getElementById("loginForm")
 .addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const serverIp = localStorage.getItem("serverIp");
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const patientId = document.getElementById("PatientId").value.trim();
 
-    if (!serverIp) {
+    const API_BASE = getAPIBase();
+
+    if (!API_BASE) {
         alert("Please configure server settings first.");
         return;
     }
 
     try {
-        const response = await fetch("api/login.php", {
+
+        const response = await fetch(`${API_BASE}/login.php`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -677,45 +688,32 @@ try {
             body: JSON.stringify({
                 username,
                 password,
-                serverIp
+                serverIp: localStorage.getItem("serverIp")
             })
         });
 
-        const text = await response.text();
-        console.log("RAW RESPONSE:", text);
+        const data = await response.json();
 
-        let result;
-        try {
-            result = JSON.parse(text);
-        } catch (e) {
-            console.error("Invalid JSON:", text);
-            alert("Server error: invalid response");
+        console.log("LOGIN RESULT:", data);
+
+        if (!data.success) {
+            alert(data.message);
             return;
         }
 
-        if (result.success) {
+        // SAVE SESSION
+        localStorage.setItem("loggedUser", data.user.name);
+        localStorage.setItem("serverIp", localStorage.getItem("serverIp"));
 
-              // Save server IP for dashboard page
-    localStorage.setItem("serverIp", serverIp);
-    
-            const patientId =
-                document.getElementById("PatientId").value.trim();
-
-            localStorage.setItem("loggedUser", result.user.name);
-
-            window.location.href =
-                `dashboard.html?patientId=${encodeURIComponent(patientId)}`;
-
-        } else {
-            alert(result.message);
-        }
+        // GO DASHBOARD
+        window.location.href =
+            `dashboard.html?patientId=${encodeURIComponent(patientId)}`;
 
     } catch (error) {
         console.error(error);
         alert("Connection error");
     }
 });
-
         </script>
 
 

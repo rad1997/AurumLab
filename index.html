@@ -563,13 +563,7 @@ body{
     <script>
 
 
-        function getAPIBase() {
-    const serverIp = localStorage.getItem("serverIp");
-
-    if (!serverIp) return null;
-
-    return `http://${serverIp}/webAurumlab/api`;
-}
+  
         
         function toggleSettings() {
             let panel = document.getElementById("settingsPanel");

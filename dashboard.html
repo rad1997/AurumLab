@@ -478,103 +478,107 @@
  <!-- JAVASCRIPT -->
  <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+     function getAPIBase() {
+    const serverIp = localStorage.getItem("serverIp");
 
-// Read patientId from URL
-const params = new URLSearchParams(window.location.search);
-const patientId = params.get("patientId");
+    if (!serverIp) return null;
 
-// Put into textbox
-if (patientId) {
-    const input = document.getElementById("patientId");
-    if (input) {
-        input.value = patientId;
-    }
+    return `http://${serverIp}/webAurumlab/api`;
 }
 
-});
+     document.addEventListener("DOMContentLoaded", function () {
 
+    const params = new URLSearchParams(window.location.search);
+    const patientId = params.get("patientId");
+
+    if (patientId) {
+        document.getElementById("patientId").value = patientId;
+    }
+});
 window.addEventListener("load", async () => {
 
-const patientId = document.getElementById("patientId").value.trim();
-const serverIp = localStorage.getItem("serverIp");
+    const patientId = document.getElementById("patientId").value.trim();
+    const serverIp = localStorage.getItem("serverIp");
 
-if (!patientId || !serverIp) return;
+    const API_BASE = getAPIBase();
 
-try {
-
-    // =========================
-    // 1. GET PATIENT
-    // =========================
-    const response = await fetch("api/get_patient.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            patientId,
-            serverIp
-        })
-    });
-
-    const result = await response.json();
-
-    if (!result.success) {
-        alert(result.message);
+    if (!patientId || !serverIp || !API_BASE) {
+        console.warn("Missing configuration");
         return;
     }
 
-    document.getElementById("patientName").value = result.name || "";
-    document.getElementById("dentist").value = result.dentist || "";
-    document.getElementById("receiveDate").value = result.receiveDate || "";
-    await loadTechWork();
-    // =========================
-    // 2. GET DENTIST NUMBER
-    // =========================
-    const dentistResponse = await fetch("api/get_dentist.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            dentist: result.dentist,
-            serverIp
-        })
-    });
+    try {
 
-    const dentistResult = await dentistResponse.json();
+        // =========================
+        // GET PATIENT DATA
+        // =========================
+        const response = await fetch(`${API_BASE}/get_patient.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                patientId,
+                serverIp
+            })
+        });
 
-    if (dentistResult.success) {
-        document.getElementById("dentistNo").value =
-            dentistResult.number || "";
+        const result = await response.json();
+
+        if (!result.success) {
+            alert(result.message);
+            return;
+        }
+
+        document.getElementById("patientName").value = result.name || "";
+        document.getElementById("dentist").value = result.dentist || "";
+        document.getElementById("receiveDate").value = result.receiveDate || "";
+
+        // =========================
+        // LOAD TECH WORK TABLE
+        // =========================
+        await loadTechWork();
+
+        // =========================
+        // GET DENTIST NUMBER
+        // =========================
+        const dentistResponse = await fetch(`${API_BASE}/get_dentist.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                dentist: result.dentist,
+                serverIp
+            })
+        });
+
+        const dentistResult = await dentistResponse.json();
+
+        if (dentistResult.success) {
+            document.getElementById("dentistNo").value =
+                dentistResult.number || "";
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Error loading dashboard data");
     }
-
-} catch (err) {
-    console.error(err);
-    alert("Error loading data");
-}
-
 });
 
 
 async function loadTechWork() {
 
-const appointmentId =
-    document.getElementById("patientId").value.trim();
+    const appointmentId =
+        document.getElementById("patientId").value.trim();
 
-const serverIp = localStorage.getItem("serverIp");
+    const serverIp = localStorage.getItem("serverIp");
 
-console.log("appointmentId =", appointmentId);
-console.log("serverIp =", serverIp);
+    const API_BASE = `http://${serverIp}/webAurumlab/api`;
 
-if (!appointmentId || !serverIp) {
-    console.warn("Missing appointmentId or serverIp");
-    return;
-}
+    if (!appointmentId || !serverIp) return;
 
-try {
-
-    const response = await fetch("api/get_tech_work.php", {
+    const response = await fetch(`${API_BASE}/get_tech_work.php`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -587,19 +591,12 @@ try {
 
     const data = await response.json();
 
-    console.log("Tech Work Result:", data);
-
     const tbody = document.getElementById("techWorkBody");
     tbody.innerHTML = "";
 
-    if (!data.success || data.rows.length === 0) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7">No data found</td>
-            </tr>
-        `;
-
+    if (!data.success || !data.rows.length) {
+        tbody.innerHTML =
+            `<tr><td colspan="7">No data found</td></tr>`;
         return;
     }
 
@@ -613,21 +610,15 @@ try {
                 <td>${row.unit ?? ""}</td>
                 <td>${row.tech_prices ?? ""}</td>
                 <td>${row.work_date ?? ""}</td>
-     <td>
-    <button class="btn-delete"
-            onclick="deleteRow(${row.ID})"
-            title="Delete Record">
-        <i class="fa-solid fa-trash"></i>
-    </button>
-</td>
+                <td>
+                    <button class="btn-delete"
+                        onclick="deleteRow(${row.ID})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
             </tr>
         `;
     });
-
-} catch (error) {
-    console.error(error);
-    alert("Error loading technician work");
-}
 }
 
 
@@ -635,41 +626,35 @@ try {
 
 function deleteRow(id) {
 
-if (!confirm("Are you sure you want to delete this record?")) {
-    return;
-}
+    if (!confirm("Delete this record?")) return;
 
-const serverIp = localStorage.getItem("serverIp");
+    const serverIp = localStorage.getItem("serverIp");
+    const API_BASE = `http://${serverIp}/webAurumlab/api`;
 
-fetch("api/delete_tech_work.php", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        id: id,
-        serverIp: serverIp
+    fetch(`${API_BASE}/delete_tech_work.php`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id: id,
+            serverIp: serverIp
+        })
     })
-})
-.then(res => res.json())
-.then(data => {
+    .then(res => res.json())
+    .then(data => {
 
-    if (data.success) {
+        if (data.success) {
+            loadTechWork(); // refresh ONLY table
+        } else {
+            alert(data.message);
+        }
 
-        alert("Deleted successfully");
-
-        // Refresh table only
-        loadTechWork();
-
-    } else {
-        alert(data.message || "Delete failed");
-    }
-
-})
-.catch(err => {
-    console.error(err);
-    alert("Server error");
-});
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Server error");
+    });
 }
 
 

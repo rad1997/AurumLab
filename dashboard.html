@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>AurumLab Dashboard</title>
+
+</head>
+
+<body class="dashboard-page">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+
+        <div class="topbar-left">
+            <i class="fa-solid fa-tooth"></i>
+            <span>AurumLab</span>
+        </div>
+
+        <div class="topbar-right">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span id="topUsername" class="username-badge">Admin</span>
+        </div>
+
+    </div>
+
+    <div class="dashboard-container">
+
+        <!-- PATIENT INFO -->
+        <div class="card patient-card">
+
+            <div class="section-title">
+                <i class="fa-solid fa-user"></i>
+                Patient Information
+            </div>
+
+            <div class="form-grid">
+
+                <div class="input-group">
+                    <label for="patientId">Patient ID</label>
+                    <input id="patientId"
+                           type="text"
+                           placeholder="Enter ID">
+                </div>
+
+                <div class="input-group">
+                    <label for="patientName">Patient Name</label>
+                    <input id="patientName"
+                           type="text"
+                           placeholder="Enter Patient Name">
+                </div>
+
+                <div class="input-group">
+                    <label for="dentist">Dentist</label>
+                    <input id="dentist"
+                           type="text"
+                           placeholder="Enter Dentist">
+                </div>
+
+                <div class="input-group">
+                    <label for="dentistNo">Dentist Number</label>
+                    <input id="dentistNo"
+                           type="text"
+                           placeholder="Enter Dentist number">
+                </div>
+
+                <div class="input-group">
+                    <label for="receiveDate">Receive Date</label>
+                    <input id="receiveDate" type="datetime-local">
+                </div>
+                
+            </div>
+
+           
+
+            <!-- COMPLETE BUTTON -->
+            <div class="complete-btn-wrapper">
+
+                <button id="btnComplete" class="complete-btn">
+                    Complete
+                </button>
+    
+            </div>
+
+           
+            <button id="openSettingsBtn" class="settings-fab">
+                ⚙
+            </button>
+            
+            <div class="settings-panel">
+
+                <h3>Lab Settings</h3>
+            
+                <input id="labNameInput" placeholder="Lab Name">
+            
+                <!-- LOGO UPLOAD (PictureBox style) -->
+                <div class="logo-box">
+                    <img id="logoPreview"
+                    src="default-logo.png"
+                    alt="Lab Logo Preview"
+                    title="Click to change logo" />
+                    <input type="file" id="labLogoInput" accept="image/*" hidden>
+                </div>
+            
+                <button id="saveSettings">Save</button>
+            
+            </div>
+
+            </div>
+
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+
+            <!-- TECHNICIAN WORK -->
+            <div class="card technician-card">
+
+                <div class="section-title">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Technician Work
+                </div>
+
+                <!-- CASTING -->
+                <div class="work-box">
+
+                    <h2>Casting</h2>
+
+                    <div class="work-row">
+
+                        <div class="input-group">
+                            <label for="castingTech">Technician</label>
+
+                            <select id="castingTech"
+                                    aria-label="Casting Technician">
+
+                                <option>Select Technician</option>
+                           
+
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="castingType">Type of Work</label>
+
+                            <select id="castingType"
+                                    aria-label="Casting Type">
+
+                                    <option>Type of Work</option>
+                                <option>one arch casting</option>
+                                <option>both arch casting</option>
+
+                                <option>Desgin model</option>
+                            </select>
+                        </div>
+                   
+                        <div class="input-group">
+
+                            <label for="castingNo">Casting Number</label>
+                        
+                            <select id="castingNo">
+                        
+                                <option value="">No:</option>
+                        
+                            </select>
+                        
+                        </div>
+
+                    <button id="btnSaveCasting" class="save-btn">
+                        <i class="fa-solid fa-download"></i>
+                        Save Casting
+                    </button>
+
+                 
+                    </div>
+
+                </div>
+
+                <!-- PREPARATION -->
+                <div class="work-box">
+
+                    <h2>Preparation</h2>
+
+                    <div class="work-row">
+
+                        <div class="input-group">
+
+                            <label for="prepTech">Technician</label>
+
+                            <select id="prepTech"
+                                    aria-label="Preparation Technician">
+
+                                <option>Select Technician</option>
+                                
+
+                            </select>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="prepType">Type of Work</label>
+
+                            <select id="prepType"
+                                    aria-label="Preparation Type">
+
+                                    <option>Type of Work</option>
+                                <option>scanner</option>
+                                <option>Abutment Preparation</option>
+                                <option>Retainer</option>
+                                <option>Night Guarde</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="prepNo">Preparation Number</label>
+                        
+                            <select id="prepNo">
+                        
+                                <option value="">No:</option>
+                        
+                            </select>
+                        
+                        </div>
+
+                        <button id="btnSavePreparation" class="save-btn">
+                            <i class="fa-solid fa-download"></i>
+                            Save Preparation
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- DESIGN -->
+                <div class="work-box">
+
+                    <h2>Design</h2>
+
+                    <div class="work-row">
+
+                        <div class="input-group">
+
+                            <label for="designTech">Technician</label>
+
+                            <select id="designTech"
+                                    aria-label="Design Technician">
+
+                                <option>Select Technician</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="designType">Type of Work</label>
+
+                            <select id="designType"
+                                    aria-label="Design Type">
+
+                                    <option>Type of Work</option>
+                                <option>Temporaray</option>
+                                <option>Core</option>
+                                <option>Full ANATOMY</option>
+                                <option>Full ANATOMY $ Layering</option>
+                                <option>Layering</option>
+                                <option>Implant</option>
+                                <option>I-Bar</option>
+                                <option>Overlay</option>
+                                <option>Veneer</option>
+                                <option>Bite</option>
+                                <option>denture</option>
+                                <option>Night Guarde</option>
+                                <option>retainer</option>
+                                <option>Mockup</option>
+                                <option>DSD</option>
+                                <option>Surgical Guide</option>
+                                
+                            </select>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="designNo">Design Number</label>
+                        
+                            <select id="designNo">
+                        
+                                <option value="">No:</option>
+                        
+                            </select>
+                        
+                        </div>
+
+                        <button id="btnSaveDesign" class="save-btn">
+                            <i class="fa-solid fa-download"></i>
+                            Save Design
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- PRE-FINISHING -->
+                <div class="work-box">
+
+                    <h2>Pre-Finishing</h2>
+
+                    <div class="work-row">
+
+                        <div class="input-group">
+
+                            <label for="preFinishTech">Technician</label>
+
+                            <select id="preFinishTech"
+                                    aria-label="Pre Finishing Technician">
+
+                                <option>Select Technician</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="preFinishType">Type of Work</label>
+
+                            <select id="preFinishType"
+                                    aria-label="Pre Finishing Type">
+
+                                    <option>Type of Work</option>
+                                <option>Printing</option>
+                                <option>Milling</option>
+                                <option>Cutting</option>
+                                <option>Initial Staining</option>
+                                <option>Firing(Centra)</option>
+                                <option>I-Bar Finishing</option>
+                                <option>metal Finishing</option>
+                                <option>metal Opc & Bond</option>
+                              
+                            </select>
+
+                        </div>
+                        <div class="input-group">
+
+                            <label for="preFinishNo">PreFinishing Number</label>
+                        
+                            <select id="preFinishNo">
+                        
+                                <option value="">No:</option>
+                        
+                            </select>
+                        
+                        </div>
+
+                        <button id="btnSavePreFinish" class="save-btn">
+                            <i class="fa-solid fa-download"></i>
+                            Save PreFinishing
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- CERAMIST FINISHING -->
+                <div class="work-box">
+
+                    <h2>Ceramist-Finishing</h2>
+
+                    <div class="work-row">
+
+                        <div class="input-group">
+
+                            <label for="ceramistTech">Technician</label>
+
+                            <select id="ceramistTech"
+                                    aria-label="Ceramist Technician">
+
+                                <option>Select Technician</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="ceramistType">Type of Work</label>
+
+                            <select id="ceramistType"
+                                    aria-label="Ceramist Finishing Type">
+
+                                    <option>Type of Work</option>
+                                <option>Glass</option>
+                                <option>Vip-Glass</option>
+                                <option>Glass Overlay E-max</option>
+                                <option>Glass Overlay Resin</option>
+                                <option>FUll anatomy with Gum</option>
+                                <option>Ceramic</option>
+                                <option>Normal Layering</option>
+                                <option>Layering Facing E-max</option>
+                                <option>Veneer Layering</option>
+                            </select>
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label for="finishingNo">Finishing Number</label>
+                        
+                            <select id="finishingNo">
+                        
+                                <option value="">No:</option>
+                        
+                            </select>
+                        
+                        </div>
+
+                        <button id="btnSaveFinishing" class="save-btn">
+                            <i class="fa-solid fa-download"></i>
+                            Save Finishing
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+           <!-- TABLE -->
+<div class="card table-card">
+
+    <div class="section-title">
+        <i class="fa-solid fa-table"></i>
+        Technician Work List
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <td class="hidden-column">${row.ID}</td>
+                <th>Tech Name</th>
+                <th>Tech Work</th>
+                <th>Unit</th>
+                <th>Price</th>
+                <th>Work Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <!-- 👇 THIS is where your dynamic rows go -->
+        <tbody id="techWorkBody">
+        </tbody>
+
+    </table>
+
+</div>
+
+        </div>
+
+    </div>
+
+ <!-- JAVASCRIPT -->
+ <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+// Read patientId from URL
+const params = new URLSearchParams(window.location.search);
+const patientId = params.get("patientId");
+
+// Put into textbox
+if (patientId) {
+    const input = document.getElementById("patientId");
+    if (input) {
+        input.value = patientId;
+    }
+}
+
+});
+
+window.addEventListener("load", async () => {
+
+const patientId = document.getElementById("patientId").value.trim();
+const serverIp = localStorage.getItem("serverIp");
+
+if (!patientId || !serverIp) return;
+
+try {
+
+    // =========================
+    // 1. GET PATIENT
+    // =========================
+    const response = await fetch("api/get_patient.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            patientId,
+            serverIp
+        })
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+        alert(result.message);
+        return;
+    }
+
+    document.getElementById("patientName").value = result.name || "";
+    document.getElementById("dentist").value = result.dentist || "";
+    document.getElementById("receiveDate").value = result.receiveDate || "";
+    await loadTechWork();
+    // =========================
+    // 2. GET DENTIST NUMBER
+    // =========================
+    const dentistResponse = await fetch("api/get_dentist.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            dentist: result.dentist,
+            serverIp
+        })
+    });
+
+    const dentistResult = await dentistResponse.json();
+
+    if (dentistResult.success) {
+        document.getElementById("dentistNo").value =
+            dentistResult.number || "";
+    }
+
+} catch (err) {
+    console.error(err);
+    alert("Error loading data");
+}
+
+});
+
+
+async function loadTechWork() {
+
+const appointmentId =
+    document.getElementById("patientId").value.trim();
+
+const serverIp = localStorage.getItem("serverIp");
+
+console.log("appointmentId =", appointmentId);
+console.log("serverIp =", serverIp);
+
+if (!appointmentId || !serverIp) {
+    console.warn("Missing appointmentId or serverIp");
+    return;
+}
+
+try {
+
+    const response = await fetch("api/get_tech_work.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            appointmentId: appointmentId,
+            serverIp: serverIp
+        })
+    });
+
+    const data = await response.json();
+
+    console.log("Tech Work Result:", data);
+
+    const tbody = document.getElementById("techWorkBody");
+    tbody.innerHTML = "";
+
+    if (!data.success || data.rows.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7">No data found</td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    data.rows.forEach(row => {
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${row.ID}</td>
+                <td>${row.tech_name ?? ""}</td>
+                <td>${row.tech_work ?? ""}</td>
+                <td>${row.unit ?? ""}</td>
+                <td>${row.tech_prices ?? ""}</td>
+                <td>${row.work_date ?? ""}</td>
+     <td>
+    <button class="btn-delete"
+            onclick="deleteRow(${row.ID})"
+            title="Delete Record">
+        <i class="fa-solid fa-trash"></i>
+    </button>
+</td>
+            </tr>
+        `;
+    });
+
+} catch (error) {
+    console.error(error);
+    alert("Error loading technician work");
+}
+}
+
+
+
+
+function deleteRow(id) {
+
+if (!confirm("Are you sure you want to delete this record?")) {
+    return;
+}
+
+const serverIp = localStorage.getItem("serverIp");
+
+fetch("api/delete_tech_work.php", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        id: id,
+        serverIp: serverIp
+    })
+})
+.then(res => res.json())
+.then(data => {
+
+    if (data.success) {
+
+        alert("Deleted successfully");
+
+        // Refresh table only
+        loadTechWork();
+
+    } else {
+        alert(data.message || "Delete failed");
+    }
+
+})
+.catch(err => {
+    console.error(err);
+    alert("Server error");
+});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+window.addEventListener("DOMContentLoaded", function () {
+
+loadTechWorkList();
+
+});
+
+
+    // ================================
+    // AUTO PUT LOGGED USER IN DROPDOWNS
+    // ================================
+    window.addEventListener("DOMContentLoaded", function () {
+    
+        const username = localStorage.getItem("loggedUser");
+    
+        if (!username) return;
+    
+        const selects = [
+            "castingTech",
+            "prepTech",
+            "designTech",
+            "preFinishTech",
+            "ceramistTech"
+        ];
+    
+        selects.forEach(id => {
+    
+            const select = document.getElementById(id);
+    
+            if (!select) return;
+    
+            select.innerHTML = "";
+    
+            const defaultOpt = new Option("Select Technician", "");
+            defaultOpt.disabled = true;
+    
+            select.add(defaultOpt);
+    
+            const userOpt = new Option(username, username);
+            select.add(userOpt);
+    
+            // auto select username
+            select.value = username;
+        });
+    });
+    
+    
+    // ================================
+    // ADD NUMBERS 1-32
+    // ================================
+    window.addEventListener("DOMContentLoaded", function () {
+    
+        const selects = [
+
+    "castingNo",
+    "prepNo",
+    "designNo",
+    "preFinishNo",
+    "finishingNo"
+];
+    
+        selects.forEach(id => {
+    
+            const select = document.getElementById(id);
+    
+            if (!select) return;
+    
+            select.innerHTML = "";
+    
+            const defaultOpt = document.createElement("option");
+            defaultOpt.textContent = "No:";
+            defaultOpt.value = "";
+            defaultOpt.disabled = true;
+            defaultOpt.selected = true;
+    
+            select.appendChild(defaultOpt);
+    
+            for (let i = 1; i <= 32; i++) {
+    
+                const opt = document.createElement("option");
+    
+                opt.value = i;
+                opt.textContent = i;
+    
+                select.appendChild(opt);
+            }
+        });
+    });
+    
+    
+    // ================================
+    // PRICE VARIABLES
+    // ================================
+    let castingPrice = 0;
+    let prepPrice = 0;
+    let designPrice = 0;
+    let preFinishPrice = 0;
+    let ceramistPrice = 0;
+    
+    
+    // ================================
+    // GET WORK PRICE
+    // ================================
+    async function getWorkPrice(work) {
+    
+        const serverIp = localStorage.getItem("serverIp");
+    
+       const response = await fetch(`${getApiUrl()}/get-work-price`, {
+    
+            method: "POST",
+    
+            headers: {
+                "Content-Type": "application/json"
+            },
+    
+            body: JSON.stringify({
+    
+                work: work,
+    
+                serverIp: localStorage.getItem("serverIp"),
+    
+                database: localStorage.getItem("database"),
+    
+                dbUser: localStorage.getItem("dbUser"),
+    
+                dbPassword: localStorage.getItem("dbPassword")
+            })
+        });
+    
+        const data = await response.json();
+    
+        if (data.success) {
+    
+            return data.price;
+        }
+    
+        return 0;
+    }
+    
+    
+    // ================================
+    // GET CASTING PRICE
+    // ================================
+    document.getElementById("castingType")
+    .addEventListener("change", async function () {
+    
+        castingPrice = await getWorkPrice(this.value);
+    
+        console.log("Casting Price:", castingPrice);
+    });
+    
+    
+    // ================================
+    // GET PREP PRICE
+    // ================================
+    document.getElementById("prepType")
+    .addEventListener("change", async function () {
+    
+        prepPrice = await getWorkPrice(this.value);
+    
+        console.log("Prep Price:", prepPrice);
+    });
+    
+    
+    // ================================
+    // GET DESIGN PRICE
+    // ================================
+    document.getElementById("designType")
+    .addEventListener("change", async function () {
+    
+        designPrice = await getWorkPrice(this.value);
+    
+        console.log("Design Price:", designPrice);
+    });
+    
+    
+    // ================================
+    // GET PREFINISH PRICE
+    // ================================
+    document.getElementById("preFinishType")
+    .addEventListener("change", async function () {
+    
+        preFinishPrice = await getWorkPrice(this.value);
+    
+        console.log("PreFinish Price:", preFinishPrice);
+    });
+    
+    
+    // ================================
+    // GET CERAMIST PRICE
+    // ================================
+    document.getElementById("ceramistType")
+    .addEventListener("change", async function () {
+    
+        ceramistPrice = await getWorkPrice(this.value);
+    
+        console.log("Ceramist Price:", ceramistPrice);
+    });
+    
+
+   // ================================
+// SAVE CASTING
+// ================================
+document.getElementById("btnSaveCasting")
+.addEventListener("click", async function () {
+
+    try {
+
+        // ================================
+        // GET VALUES
+        // ================================
+        const patientId = document.getElementById("patientId").value.trim();
+        const patientName = document.getElementById("patientName").value.trim();
+        const dentist = document.getElementById("dentist").value.trim();
+
+        const techName =
+            document.getElementById("castingTech").value;
+
+        const techWork =
+            document.getElementById("castingType").value;
+
+        const unit =
+            document.getElementById("castingNo").value;
+
+        // ================================
+        // VALIDATION
+        // ================================
+        if (!patientId || isNaN(patientId)) {
+
+            alert("Invalid Patient ID");
+            return;
+        }
+
+        if (!techName || !techWork || !unit) {
+
+            alert("Please select Technician and Work Type");
+            return;
+        }
+
+        // ================================
+        // CALCULATE PRICE
+        // ================================
+        const hitPrices = parseInt(unit) * castingPrice;
+
+        // ================================
+        // SERVER IP
+        // ================================
+        const serverIp = localStorage.getItem("serverIp");
+
+        // ================================
+        // SAVE API
+        // ================================
+      const response = await fetch(`${getApiUrl()}/save-casting`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    appointmentid: patientId,
+                    dentist: dentist,
+                    patient_name: patientName,
+
+                    tech_name: techName,
+                    tech_work: techWork,
+
+                    work_type: "Casting",
+
+                    unit: unit,
+
+                    status: "InProgress",
+
+                    tech_prices: hitPrices,
+
+                    work_date: new Date(),
+
+                    serverIp: localStorage.getItem("serverIp"),
+                    database: localStorage.getItem("database"),
+                    dbUser: localStorage.getItem("dbUser"),
+                    dbPassword: localStorage.getItem("dbPassword")
+                })
+            });
+
+        const data = await response.json();
+
+        // ================================
+        // SUCCESS
+        // ================================
+        if (data.success) {
+
+            alert("Casting Saved Successfully");
+
+            // OPTIONAL REFRESH
+              // 🔥 REFRESH TABLE
+              const id = new URLSearchParams(window.location.search)
+        .get("patientId");
+           loadTechWorkList(id);
+        }
+        else {
+
+            alert(data.message || "Save Failed");
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert("Error Saving Casting");
+    }
+});
+
+  // ================================
+// SAVE PREPARATION
+// ================================
+document.getElementById("btnSavePreparation")
+.addEventListener("click", async function () {
+
+    try {
+
+        // ================================
+        // GET ELEMENTS
+        // ================================
+        const patientIdElement =
+            document.getElementById("patientId");
+
+        const patientNameElement =
+            document.getElementById("patientName");
+
+        const dentistElement =
+            document.getElementById("dentist");
+
+        const prepTechElement =
+            document.getElementById("prepTech");
+
+        const prepTypeElement =
+            document.getElementById("prepType");
+
+        const prepNoElement =
+            document.getElementById("prepNo");
+
+        // ================================
+        // CHECK ELEMENTS
+        // ================================
+        if (!patientIdElement ||
+            !patientNameElement ||
+            !dentistElement ||
+            !prepTechElement ||
+            !prepTypeElement ||
+            !prepNoElement) {
+
+            alert("Some HTML elements are missing");
+            return;
+        }
+
+        // ================================
+        // GET VALUES
+        // ================================
+        const patientId =
+            patientIdElement.value.trim();
+
+        const patientName =
+            patientNameElement.value.trim();
+
+        const dentist =
+            dentistElement.value.trim();
+
+        const techName =
+            prepTechElement.value;
+
+        const techWork =
+            prepTypeElement.value;
+
+        const unit =
+            prepNoElement.value;
+
+        // ================================
+        // VALIDATE
+        // ================================
+        if (!patientId || isNaN(patientId)) {
+
+            alert("Invalid Patient ID");
+            return;
+        }
+
+        if (!techName || !techWork || !unit) {
+
+            alert("Please select Technician and Work Type");
+            return;
+        }
+
+        // ================================
+        // CALCULATE PRICE
+        // ================================
+        const hitPrices =
+            parseInt(unit) * prepPrice;
+
+        // ================================
+        // SERVER
+        // ================================
+        const serverIp =
+            localStorage.getItem("serverIp");
+
+        // ================================
+        // SAVE
+        // ================================
+      const response = await fetch(`${getApiUrl()}/save-preparation`,
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    appointmentid: patientId,
+
+                    dentist: dentist,
+
+                    patient_name: patientName,
+
+                    tech_name: techName,
+
+                    tech_work: techWork,
+
+                    work_type: "Preparation",
+
+                    unit: unit,
+
+                    status: "InProgress",
+
+                    tech_prices: hitPrices,
+
+                    work_date: new Date(),
+
+                    serverIp:
+                        localStorage.getItem("serverIp"),
+
+                    database:
+                        localStorage.getItem("database"),
+
+                    dbUser:
+                        localStorage.getItem("dbUser"),
+
+                    dbPassword:
+                        localStorage.getItem("dbPassword")
+                })
+            });
+
+        const data = await response.json();
+
+        // ================================
+        // RESULT
+        // ================================
+        if (data.success) {
+
+            alert("Preparation Saved Successfully");
+
+               // 🔥 REFRESH TABLE
+               const id = new URLSearchParams(window.location.search)
+        .get("patientId");
+           loadTechWorkList(id);
+        }
+        else {
+
+            alert(data.message || "Save Failed");
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert("Error Saving Preparation");
+    }
+});
+
+// ================================
+// SAVE DESIGN
+// ================================
+document.getElementById("btnSaveDesign")
+.addEventListener("click", async function () {
+
+    try {
+
+        // ================================
+        // GET ELEMENTS
+        // ================================
+        const patientIdElement =
+            document.getElementById("patientId");
+
+        const patientNameElement =
+            document.getElementById("patientName");
+
+        const dentistElement =
+            document.getElementById("dentist");
+
+        const designTechElement =
+            document.getElementById("designTech");
+
+        const designTypeElement =
+            document.getElementById("designType");
+
+        const designNoElement =
+            document.getElementById("designNo");
+
+        // ================================
+        // CHECK ELEMENTS
+        // ================================
+        if (!patientIdElement ||
+            !patientNameElement ||
+            !dentistElement ||
+            !designTechElement ||
+            !designTypeElement ||
+            !designNoElement) {
+
+            alert("Some HTML elements are missing");
+            return;
+        }
+
+        // ================================
+        // GET VALUES
+        // ================================
+        const patientId =
+            patientIdElement.value.trim();
+
+        const patientName =
+            patientNameElement.value.trim();
+
+        const dentist =
+            dentistElement.value.trim();
+
+        const techName =
+            designTechElement.value;
+
+        const techWork =
+            designTypeElement.value;
+
+        const unit =
+            designNoElement.value;
+
+        // ================================
+        // VALIDATE
+        // ================================
+        if (!patientId || isNaN(patientId)) {
+
+            alert("Invalid Patient ID");
+            return;
+        }
+
+        if (!techName || !techWork || !unit) {
+
+            alert("Please select Technician and Work Type");
+            return;
+        }
+
+        // ================================
+        // CALCULATE PRICE
+        // ================================
+        const hitPrices =
+            parseInt(unit) * designPrice;
+
+        // ================================
+        // SERVER
+        // ================================
+        const serverIp =
+            localStorage.getItem("serverIp");
+
+        // ================================
+        // SAVE
+        // ================================
+       const response = await fetch(`${getApiUrl()}/save-design`,
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    appointmentid: patientId,
+
+                    dentist: dentist,
+
+                    patient_name: patientName,
+
+                    tech_name: techName,
+
+                    tech_work: techWork,
+
+                    work_type: "Desgin",
+
+                    unit: unit,
+
+                    status: "InProgress",
+
+                    tech_prices: hitPrices,
+
+                    work_date: new Date(),
+
+                    serverIp:
+                        localStorage.getItem("serverIp"),
+
+                    database:
+                        localStorage.getItem("database"),
+
+                    dbUser:
+                        localStorage.getItem("dbUser"),
+
+                    dbPassword:
+                        localStorage.getItem("dbPassword")
+                })
+            });
+
+        const data = await response.json();
+
+        // ================================
+        // RESULT
+        // ================================
+        if (data.success) {
+
+            alert("Design Saved Successfully");
+
+               // 🔥 REFRESH TABLE
+               const id = new URLSearchParams(window.location.search)
+        .get("patientId");
+           loadTechWorkList(id);
+        }
+        else {
+
+            alert(data.message || "Save Failed");
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert("Error Saving Design");
+    }
+});
+
+
+// ================================
+// SAVE PREFINISHING
+// ================================
+document.getElementById("btnSavePreFinish")
+.addEventListener("click", async function () {
+
+    try {
+
+        // ================================
+        // GET ELEMENTS
+        // ================================
+        const patientIdElement =
+            document.getElementById("patientId");
+
+        const patientNameElement =
+            document.getElementById("patientName");
+
+        const dentistElement =
+            document.getElementById("dentist");
+
+        const preFinishTechElement =
+            document.getElementById("preFinishTech");
+
+        const preFinishTypeElement =
+            document.getElementById("preFinishType");
+
+        const preFinishNoElement =
+            document.getElementById("preFinishNo");
+
+        // ================================
+        // CHECK ELEMENTS
+        // ================================
+        if (!patientIdElement ||
+            !patientNameElement ||
+            !dentistElement ||
+            !preFinishTechElement ||
+            !preFinishTypeElement ||
+            !preFinishNoElement) {
+
+            alert("Some HTML elements are missing");
+            return;
+        }
+
+        // ================================
+        // GET VALUES
+        // ================================
+        const patientId =
+            patientIdElement.value.trim();
+
+        const patientName =
+            patientNameElement.value.trim();
+
+        const dentist =
+            dentistElement.value.trim();
+
+        const techName =
+            preFinishTechElement.value;
+
+        const techWork =
+            preFinishTypeElement.value;
+
+        const unit =
+            preFinishNoElement.value;
+
+        // ================================
+        // VALIDATE
+        // ================================
+        if (!patientId || isNaN(patientId)) {
+
+            alert("Invalid Patient ID");
+            return;
+        }
+
+        if (!techName || !techWork || !unit) {
+
+            alert("Please select Technician and Work Type");
+            return;
+        }
+
+        // ================================
+        // CALCULATE PRICE
+        // ================================
+        const hitPrices =
+            parseInt(unit) * preFinishPrice;
+
+        // ================================
+        // SERVER
+        // ================================
+        const serverIp =
+            localStorage.getItem("serverIp");
+
+        // ================================
+        // SAVE
+        // ================================
+        const response = await fetch(`${getApiUrl()}/save-prefinishing`,
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    appointmentid: patientId,
+
+                    dentist: dentist,
+
+                    patient_name: patientName,
+
+                    tech_name: techName,
+
+                    tech_work: techWork,
+
+                    work_type: "PreFinishing",
+
+                    unit: unit,
+
+                    status: "InProgress",
+
+                    tech_prices: hitPrices,
+
+                    work_date: new Date(),
+
+                    serverIp:
+                        localStorage.getItem("serverIp"),
+
+                    database:
+                        localStorage.getItem("database"),
+
+                    dbUser:
+                        localStorage.getItem("dbUser"),
+
+                    dbPassword:
+                        localStorage.getItem("dbPassword")
+                })
+            });
+
+        const data = await response.json();
+
+        // ================================
+        // RESULT
+        // ================================
+        if (data.success) {
+
+            alert("PreFinishing Saved Successfully");
+
+             // 🔥 REFRESH TABLE
+             const id = new URLSearchParams(window.location.search)
+        .get("patientId");
+           loadTechWorkList(id);
+        }
+        else {
+
+            alert(data.message || "Save Failed");
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert("Error Saving PreFinishing");
+    }
+});
+
+// ================================
+// SAVE FINISHING (CERAMIST)
+// ================================
+document.getElementById("btnSaveFinishing")
+.addEventListener("click", async function () {
+
+    try {
+
+        const patientIdEl = document.getElementById("patientId");
+const patientNameEl = document.getElementById("patientName");
+const dentistEl = document.getElementById("dentist");
+
+const techEl = document.getElementById("ceramistTech"); // FIXED
+const workEl = document.getElementById("ceramistType");
+const unitEl = document.getElementById("finishingNo");
+
+        if (!patientIdEl || !patientNameEl || !dentistEl ||
+            !techEl || !workEl || !unitEl) {
+
+            alert("Missing HTML elements");
+            return;
+        }
+
+        const patientId = patientIdEl.value.trim();
+        const patientName = patientNameEl.value.trim();
+        const dentist = dentistEl.value.trim();
+
+        const techName = techEl.value;
+        const techWork = workEl.value;
+        const unit = unitEl.value;
+
+        if (!patientId || isNaN(patientId)) {
+            alert("Invalid Patient ID");
+            return;
+        }
+
+        if (!techName || !techWork || !unit) {
+            alert("Please select Technician and Work Type");
+            return;
+        }
+
+        const hitPrices = parseInt(unit) * ceramistPrice;
+
+        const serverIp = localStorage.getItem("serverIp");
+
+       const response = await fetch(`${getApiUrl()}/save-finishing`, {
+
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                appointmentid: patientId,
+                dentist: dentist,
+                patient_name: patientName,
+
+                tech_name: techName,
+                tech_work: techWork,
+
+                work_type: "Ceramist",
+
+                unit: unit,
+                status: "InProgress",
+
+                tech_prices: hitPrices,
+                work_date: new Date(),
+
+                serverIp: localStorage.getItem("serverIp"),
+                database: localStorage.getItem("database"),
+                dbUser: localStorage.getItem("dbUser"),
+                dbPassword: localStorage.getItem("dbPassword")
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            alert("Finishing Saved Successfully");
+
+            // 🔥 REFRESH TABLE
+            const id = new URLSearchParams(window.location.search)
+        .get("patientId");
+           loadTechWorkList(id);
+        }
+        else {
+            alert(data.message || "Save Failed");
+        }
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Error Saving Finishing");
+    }
+});
+
+
+/////// BUTTON COMPLETED ///////
+document.getElementById("btnComplete").addEventListener("click", async function () {
+
+const patientId = document.getElementById("patientId").value;
+const serverIp = localStorage.getItem("serverIp");
+
+if (!patientId) {
+    alert("Please enter Patient ID");
+    return;
+}
+
+if (!serverIp) {
+    alert("Server IP not found");
+    return;
+}
+
+try {
+
+    // =========================
+    // 1. COMPLETE PATIENT
+    // =========================
+   const response = await fetch(`${getApiUrl()}/complete-patient`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ appointmentid: patientId })
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+        alert("Update failed");
+        return;
+    }
+
+    // =========================
+    // 2. UPDATE APPOINTMENT TABLE
+    // =========================
+   await fetch(`${getApiUrl()}/update-appointment-status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            id2: patientId,
+            status: "Complete",
+            serverIp,
+            database: localStorage.getItem("database"),
+            dbUser: localStorage.getItem("dbUser"),
+            dbPassword: localStorage.getItem("dbPassword")
+        })
+    });
+
+    // =========================
+    // 3. GET PRINT DATA
+    // =========================
+    const patientName = document.getElementById("patientName").value;
+    const dentist = document.getElementById("dentist").value;
+    const dentistNo = document.getElementById("dentistNo").value;
+    const receiveDate = document.getElementById("receiveDate").value;
+
+    const labSettings = JSON.parse(localStorage.getItem("labSettings")) || {};
+    const labName = labSettings.labName || "AurumLab";
+    const logo = labSettings.labLogo || "";
+
+    const printDate = new Date().toLocaleString();
+
+    // QR URL
+    const qrUrl = `https://admirable-pastelito-c13624.netlify.app/?id=${patientId}`;
+
+    // =========================
+    // 4. GENERATE QR SAFELY
+    // =========================
+    const tempDiv = document.createElement("div");
+
+    new QRCode(tempDiv, {
+        text: qrUrl,
+        width: 120,
+        height: 120
+    });
+
+    // wait for QR rendering
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    const qrHtml = tempDiv.innerHTML;
+
+    // =========================
+    // 5. PRINT WINDOW
+    // =========================
+    const printWindow = window.open("", "_blank");
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Lab Label</title>
+
+            <style>
+                @page {
+                    size: 80mm 120mm;
+                    margin: 5mm;
+                }
+
+                body {
+                    font-family: Arial;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: flex-start;
+                }
+
+                .card {
+                    width: 100%;
+                    border: 1.5px solid #D4AF37;
+                    border-radius: 10px;
+                    padding: 10px;
+                    text-align: center;
+                }
+
+                .logo {
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                }
+
+                .lab-name {
+                    font-size: 14px;
+                    font-weight: bold;
+                    color: #D4AF37;
+                }
+
+                .qr {
+                    margin: 10px 0;
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .info {
+                    text-align: left;
+                    font-size: 11px;
+                    line-height: 1.5;
+                }
+
+                .footer {
+                    font-size: 9px;
+                    color: gray;
+                    margin-top: 5px;
+                }
+            </style>
+        </head>
+
+        <body onload="window.print()">
+
+            <div class="card">
+
+                <div>
+                    ${logo ? `<img src="${logo}" class="logo"/>` : ""}
+                    <div class="lab-name">${labName}</div>
+                </div>
+
+                <div class="qr">
+                    ${qrHtml}
+                </div>
+
+                <div class="info">
+                    <b>ID:</b> ${patientId}<br>
+                    <b>Name:</b> ${patientName}<br>
+                    <b>Dentist:</b> ${dentist}<br>
+                    <b>Tel:</b> ${dentistNo}<br>
+                    <b>Receive:</b> ${receiveDate}<br>
+                    <b>Print:</b> ${printDate}
+                </div>
+
+                <div class="footer">
+                    AurumLab System
+                </div>
+
+            </div>
+
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+
+    // =========================
+    // 6. UI UPDATE
+    // =========================
+    document.getElementById("btnComplete").innerText = "Completed ✓";
+    document.getElementById("btnComplete").disabled = true;
+
+} catch (error) {
+    console.error(error);
+    alert("Server not reachable");
+}
+});
+
+/////// delete button /////////////
+document.getElementById("techWorkBody").addEventListener("click", async function (e) {
+
+if (!e.target.classList.contains("delete-btn")) return;
+
+const row = e.target.closest("tr");
+
+const idText = row.querySelector(".db-id").innerText.trim();
+const id = Number(idText);
+
+if (!id || isNaN(id)) {
+    alert("Invalid ID");
+    return;
+}
+
+if (!confirm("Delete this row?")) return;
+
+try {
+
+    const serverIp = localStorage.getItem("serverIp");
+
+   const response = await fetch(`${getApiUrl()}/delete-tech-work`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+    });
+
+    const result = await response.json();
+
+    console.log(result);
+
+    if (result.success) {
+
+        const patientId = new URLSearchParams(window.location.search)
+            .get("patientId");
+
+        loadTechWorkList(patientId);
+
+    } else {
+        alert(result.error || "Delete failed");
+    }
+
+} catch (err) {
+    console.log(err);
+    alert("Server error");
+}
+});
+
+///////////// printing
+
+
+
+
+
+// GET ELEMENTS
+const logoInput = document.getElementById("labLogoInput");
+const logoPreview = document.getElementById("logoPreview");
+
+// ✔ ONLY ONE CLICK EVENT (IMPORTANT FIX)
+logoPreview.addEventListener("click", function () {
+    logoInput.click();
+});
+
+// ✔ LOAD IMAGE + SAVE
+logoInput.addEventListener("change", function (event) {
+
+    const file = event.target.files[0];
+
+    if (file) {
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            logoPreview.src = e.target.result;
+
+            // SAVE LOGO
+            let settings = JSON.parse(localStorage.getItem("labSettings")) || {};
+            settings.labLogo = e.target.result;
+
+            localStorage.setItem("labSettings", JSON.stringify(settings));
+        };
+
+        reader.readAsDataURL(file);
+    }
+});
+
+// ✔ SAVE LAB NAME
+const settingsPanel = document.querySelector(".settings-panel");
+const openBtn = document.getElementById("openSettingsBtn");
+
+// OPEN / CLOSE TOGGLE
+openBtn.addEventListener("click", function () {
+    settingsPanel.classList.toggle("show");
+});
+
+// CLOSE AFTER SAVE
+document.getElementById("saveSettings").addEventListener("click", function () {
+
+    const name = document.getElementById("labNameInput").value;
+
+    let settings = JSON.parse(localStorage.getItem("labSettings")) || {};
+    settings.labName = name;
+
+    localStorage.setItem("labSettings", JSON.stringify(settings));
+
+    alert("Settings saved");
+
+    // CLOSE PANEL AFTER SAVE
+    settingsPanel.classList.remove("show");
+});
+
+// ✔ LOAD SETTINGS ON PAGE OPEN
+window.addEventListener("DOMContentLoaded", function () {
+
+    let settings = JSON.parse(localStorage.getItem("labSettings"));
+
+    if (settings) {
+
+        document.getElementById("labNameInput").value = settings.labName || "";
+
+        if (settings.labLogo) {
+            logoPreview.src = settings.labLogo;
+        }
+    }
+});
+
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>

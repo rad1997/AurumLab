@@ -267,22 +267,22 @@ body{
 
 
 .settings-panel{
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
+    display:none;
+    margin-top:25px;
+    border-top:1px solid rgba(255,255,255,0.15);
+    padding-top:20px;
 
+    /* motion base */
+    opacity:0;
+    transform: translateY(-10px);
     transition: all 0.35s ease;
-
-    margin-top: 20px;
-    border-top:1px solid rgba(212,175,55,0.3);
-    padding-top: 0;
 }
 
-/* OPEN STATE */
+/* WHEN OPEN */
 .settings-panel.show{
-    max-height: 400px;
-    opacity: 1;
-    padding-top: 15px;
+    display:block;
+    opacity:1;
+    transform: translateY(0);
 }
 
 /* INPUTS MOTION */
@@ -543,14 +543,9 @@ body{
                    placeholder="database name">
 
 
-                 <button
-    type="button"
-    class="settings-btn"
-    onclick="toggleSettings()"
-    title="Settings">
-
-    <i class="fa-solid fa-gear"></i>
-</button>
+                   <button type="button" class="login-btn" onclick="saveSettings(); checkServer();">
+                    Save & Check Server
+                </button>
         
         </div>
 
@@ -567,8 +562,7 @@ body{
     <!-- JAVASCRIPT -->
     <script>
 
-
-   function toggleSettings() {
+        function toggleSettings() {
             let panel = document.getElementById("settingsPanel");
         
             if (panel.classList.contains("show")) {
@@ -657,29 +651,25 @@ try {
 }
 }
         
-        
  /* =========================
              LOGIN (FIXED)
   ========================= */
   
-document.getElementById("loginForm")
+  document.getElementById("loginForm")
 .addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const patientId = document.getElementById("PatientId").value.trim();
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const serverIp = localStorage.getItem("serverIp");
 
-    const API_BASE = getAPIBase();
-
-    if (!API_BASE) {
+    if (!serverIp) {
         alert("Please configure server settings first.");
         return;
     }
 
     try {
-
-        const response = await fetch(`${API_BASE}/login.php`, {
+        const response = await fetch("api/login.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -687,32 +677,45 @@ document.getElementById("loginForm")
             body: JSON.stringify({
                 username,
                 password,
-                serverIp: localStorage.getItem("serverIp")
+                serverIp
             })
         });
 
-        const data = await response.json();
+        const text = await response.text();
+        console.log("RAW RESPONSE:", text);
 
-        console.log("LOGIN RESULT:", data);
-
-        if (!data.success) {
-            alert(data.message);
+        let result;
+        try {
+            result = JSON.parse(text);
+        } catch (e) {
+            console.error("Invalid JSON:", text);
+            alert("Server error: invalid response");
             return;
         }
 
-        // SAVE SESSION
-        localStorage.setItem("loggedUser", data.user.name);
-        localStorage.setItem("serverIp", localStorage.getItem("serverIp"));
+        if (result.success) {
 
-        // GO DASHBOARD
-        window.location.href =
-            `dashboard.html?patientId=${encodeURIComponent(patientId)}`;
+              // Save server IP for dashboard page
+    localStorage.setItem("serverIp", serverIp);
+    
+            const patientId =
+                document.getElementById("PatientId").value.trim();
+
+            localStorage.setItem("loggedUser", result.user.name);
+
+            window.location.href =
+                `dashboard.html?patientId=${encodeURIComponent(patientId)}`;
+
+        } else {
+            alert(result.message);
+        }
 
     } catch (error) {
         console.error(error);
         alert("Connection error");
     }
 });
+
         </script>
 
 

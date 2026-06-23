@@ -478,12 +478,12 @@
  <!-- JAVASCRIPT -->
  <script>
 
-     function getAPIBase() {
+    function getAPIBase() {
     const serverIp = localStorage.getItem("serverIp");
 
     if (!serverIp) return null;
 
-    return `http://${serverIp}/webAurumlab/api`;
+    return `http://${serverIp}/web%20Aurumlab/api`;
 }
 
      document.addEventListener("DOMContentLoaded", function () {
@@ -512,7 +512,7 @@ window.addEventListener("load", async () => {
         // =========================
         // GET PATIENT DATA
         // =========================
-        const response = await fetch(`http://${serverIp}/web%20Aurumlab/api/get_patient.php`, {
+        const response = await fetch(`${API_BASE}/get_patient.php`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -542,7 +542,7 @@ window.addEventListener("load", async () => {
         // =========================
         // GET DENTIST NUMBER
         // =========================
-        const dentistResponse = await fetch(`http://${serverIp}/web%20Aurumlab/api/get_dentist.php`, {
+        const dentistResponse = await fetch(`${API_BASE}/get_dentist.php`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -578,7 +578,7 @@ async function loadTechWork() {
 
     if (!appointmentId || !serverIp) return;
 
-    const response = await fetch(`http://${serverIp}/web%20Aurumlab/api/get_tech_work.php`, {
+    const response = await fetch(`${API_BASE}/get_tech_work.php`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -631,7 +631,7 @@ function deleteRow(id) {
     const serverIp = localStorage.getItem("serverIp");
     const API_BASE = `http://${serverIp}/webAurumlab/api`;
 
-   fetch(`http://${serverIp}/web%20Aurumlab/api/delete_tech_work.php`, {
+  fetch(`${API_BASE}/delete_tech_work.php`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -670,7 +670,7 @@ function deleteRow(id) {
 
 window.addEventListener("DOMContentLoaded", function () {
 
-loadTechWorkList();
+loadTechWork();
 
 });
 

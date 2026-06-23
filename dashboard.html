@@ -631,7 +631,7 @@ function deleteRow(id) {
     const serverIp = localStorage.getItem("serverIp");
     const API_BASE = `http://${serverIp}/webAurumlab/api`;
 
-    fetch(`http://${serverIp}/web%20Aurumlab/api/delete_tech_work.php`, {
+   fetch(`http://${serverIp}/web%20Aurumlab/api/delete_tech_work.php`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

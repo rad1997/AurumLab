@@ -7,22 +7,33 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 
-// Handle preflight request
+// Preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-$data = json_decode(file_get_contents("php://input"), true);
+// Read JSON safely
+$raw = file_get_contents("php://input");
+$data = json_decode($raw, true);
+
+if (json_last_error() !== JSON_ERROR_NONE) {
+    http_response_code(400);
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid JSON format"
+    ]);
+    exit;
+}
 
 $appointmentId = trim($data["appointmentId"] ?? "");
 $serverIp      = trim($data["serverIp"] ?? "");
 
 if ($appointmentId === "" || $serverIp === "") {
+    http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Missing required data",
-        "received" => $data
+        "message" => "Missing required data"
     ]);
     exit;
 }
@@ -34,10 +45,10 @@ $dbPassword = "2412";
 $conn = getConnection($serverIp, $database, $dbUser, $dbPassword);
 
 if (!$conn) {
+    http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Database connection failed",
-        "error" => sqlsrv_errors()
+        "message" => "Database connection failed"
     ]);
     exit;
 }
@@ -60,10 +71,10 @@ $params = [$appointmentId];
 $stmt = sqlsrv_query($conn, $sql, $params);
 
 if ($stmt === false) {
+    http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Query failed",
-        "error" => sqlsrv_errors()
+        "message" => "Query execution failed"
     ]);
     exit;
 }
@@ -72,7 +83,7 @@ $rows = [];
 
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
-    if ($row["work_date"] instanceof DateTime) {
+    if (!empty($row["work_date"]) && $row["work_date"] instanceof DateTime) {
         $row["work_date"] = $row["work_date"]->format("Y-m-d");
     }
 

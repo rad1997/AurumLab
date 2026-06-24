@@ -565,7 +565,21 @@ body{
     <!-- JAVASCRIPT -->
     <script>
 
+document.addEventListener("DOMContentLoaded", () => {
 
+const params = new URLSearchParams(window.location.search);
+
+const patientId = params.get("id");
+
+
+
+const txtPatient = document.getElementById("PatientId");
+
+if (txtPatient && patientId) {
+    txtPatient.value = patientId;
+}
+
+});
 
 
 

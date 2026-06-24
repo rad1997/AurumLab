@@ -565,34 +565,9 @@ body{
     <!-- JAVASCRIPT -->
     <script>
 
-document.addEventListener("DOMContentLoaded", () => {
 
-const params = new URLSearchParams(window.location.search);
 
-const patientId = params.get("id");
 
-console.log("Full URL:", window.location.href);
-console.log("ID From QR:", patientId);
-
-const txtPatient = document.getElementById("PatientId");
-
-if (txtPatient && patientId) {
-    txtPatient.value = patientId;
-}
-
-});
-
-window.onload = function () {
-
-alert("URL = " + window.location.href);
-
-const id = new URLSearchParams(window.location.search).get("id");
-
-alert("ID = " + id);
-
-document.getElementById("PatientId").value = id || "";
-
-};
 
         function toggleSettings() {
 

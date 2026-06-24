@@ -478,6 +478,54 @@
  <!-- JAVASCRIPT -->
  <script>
 
+
+document.addEventListener("DOMContentLoaded", function () {
+
+const params = new URLSearchParams(window.location.search);
+const patientId = params.get("id");
+
+if (patientId) {
+
+    // Put ID in textbox
+    document.getElementById("patientId").value = patientId;
+
+    // Hide technician dropdowns
+    [
+        "castingTech",
+        "prepTech",
+        "designTech",
+        "preFinishTech",
+        "ceramistTech"
+    ].forEach(id => {
+        const el = document.getElementById(id);
+
+        if (el) {
+            el.closest(".input-group").style.display = "none";
+        }
+    });
+
+    // Hide Price column header
+    document.querySelectorAll("table th").forEach(th => {
+        if (th.textContent.trim() === "Price") {
+            th.style.display = "none";
+        }
+    });
+
+
+    document.querySelectorAll("table th").forEach(th => {
+        if (th.textContent.trim() === "Tech Name") {
+            th.style.display = "none";
+        }
+    });
+
+
+}
+
+});
+
+
+
+
     function getAPIBase() {
     const serverIp = localStorage.getItem("serverIp");
 
@@ -574,7 +622,7 @@ async function loadTechWork() {
 
     const serverIp = localStorage.getItem("serverIp");
 
-    const API_BASE = `http://${serverIp}/webAurumlab/api`;
+    const API_BASE = getAPIBase();
 
     if (!appointmentId || !serverIp) return;
 
@@ -608,7 +656,7 @@ async function loadTechWork() {
                 <td>${row.tech_name ?? ""}</td>
                 <td>${row.tech_work ?? ""}</td>
                 <td>${row.unit ?? ""}</td>
-                <td>${row.tech_prices ?? ""}</td>
+                 <td>${Number(row.tech_prices || 0).toFixed(0)}</td>
                 <td>${row.work_date ?? ""}</td>
                 <td>
                     <button class="btn-delete"
@@ -629,7 +677,7 @@ function deleteRow(id) {
     if (!confirm("Delete this record?")) return;
 
     const serverIp = localStorage.getItem("serverIp");
-    const API_BASE = `http://${serverIp}/webAurumlab/api`;
+    const API_BASE = getAPIBase();
 
   fetch(`${API_BASE}/delete_tech_work.php`, {
         method: "POST",
@@ -658,19 +706,9 @@ function deleteRow(id) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
 window.addEventListener("DOMContentLoaded", function () {
 
-loadTechWork();
+    loadTechWork();
 
 });
 
@@ -756,115 +794,105 @@ loadTechWork();
         });
     });
     
-    
-    // ================================
-    // PRICE VARIABLES
-    // ================================
-    let castingPrice = 0;
-    let prepPrice = 0;
-    let designPrice = 0;
-    let preFinishPrice = 0;
-    let ceramistPrice = 0;
-    
-    
-    // ================================
-    // GET WORK PRICE
-    // ================================
-    async function getWorkPrice(work) {
-    
-        const serverIp = localStorage.getItem("serverIp");
-    
-       const response = await fetch(`${getApiUrl()}/get-work-price`, {
-    
+  // ================================
+// PRICE VARIABLES
+// ================================
+let castingPrice = 0;
+let prepPrice = 0;
+let designPrice = 0;
+let preFinishPrice = 0;
+let ceramistPrice = 0;
+
+// ================================
+// GET WORK PRICE
+// ================================
+async function getWorkPrice(work) {
+
+    if (!work) return 0;
+
+    try {
+
+        const response = await fetch(`${getAPIBase()}/get_work_price.php`, {
             method: "POST",
-    
             headers: {
                 "Content-Type": "application/json"
             },
-    
             body: JSON.stringify({
-    
                 work: work,
-    
-                serverIp: localStorage.getItem("serverIp"),
-    
-                database: localStorage.getItem("database"),
-    
-                dbUser: localStorage.getItem("dbUser"),
-    
-                dbPassword: localStorage.getItem("dbPassword")
+                serverIp: localStorage.getItem("serverIp")
             })
         });
-    
+
         const data = await response.json();
-    
+
         if (data.success) {
-    
-            return data.price;
+            return parseFloat(data.price) || 0;
         }
-    
+
+        console.error(data.message);
+        return 0;
+
+    } catch (error) {
+
+        console.error("Price Error:", error);
         return 0;
     }
-    
-    
-    // ================================
-    // GET CASTING PRICE
-    // ================================
-    document.getElementById("castingType")
-    .addEventListener("change", async function () {
-    
-        castingPrice = await getWorkPrice(this.value);
-    
-        console.log("Casting Price:", castingPrice);
-    });
-    
-    
-    // ================================
-    // GET PREP PRICE
-    // ================================
-    document.getElementById("prepType")
-    .addEventListener("change", async function () {
-    
-        prepPrice = await getWorkPrice(this.value);
-    
-        console.log("Prep Price:", prepPrice);
-    });
-    
-    
-    // ================================
-    // GET DESIGN PRICE
-    // ================================
-    document.getElementById("designType")
-    .addEventListener("change", async function () {
-    
-        designPrice = await getWorkPrice(this.value);
-    
-        console.log("Design Price:", designPrice);
-    });
-    
-    
-    // ================================
-    // GET PREFINISH PRICE
-    // ================================
-    document.getElementById("preFinishType")
-    .addEventListener("change", async function () {
-    
-        preFinishPrice = await getWorkPrice(this.value);
-    
-        console.log("PreFinish Price:", preFinishPrice);
-    });
-    
-    
-    // ================================
-    // GET CERAMIST PRICE
-    // ================================
-    document.getElementById("ceramistType")
-    .addEventListener("change", async function () {
-    
-        ceramistPrice = await getWorkPrice(this.value);
-    
-        console.log("Ceramist Price:", ceramistPrice);
-    });
+}
+
+// ================================
+// CASTING
+// ================================
+document.getElementById("castingType")
+.addEventListener("change", async function () {
+
+    castingPrice = await getWorkPrice(this.value);
+
+    console.log("Casting Price:", castingPrice);
+});
+
+// ================================
+// PREP
+// ================================
+document.getElementById("prepType")
+.addEventListener("change", async function () {
+
+    prepPrice = await getWorkPrice(this.value);
+
+    console.log("Prep Price:", prepPrice);
+});
+
+// ================================
+// DESIGN
+// ================================
+document.getElementById("designType")
+.addEventListener("change", async function () {
+
+    designPrice = await getWorkPrice(this.value);
+
+    console.log("Design Price:", designPrice);
+});
+
+// ================================
+// PREFINISH
+// ================================
+document.getElementById("preFinishType")
+.addEventListener("change", async function () {
+
+    preFinishPrice = await getWorkPrice(this.value);
+
+    console.log("PreFinish Price:", preFinishPrice);
+});
+
+// ================================
+// CERAMIST
+// ================================
+document.getElementById("ceramistType")
+.addEventListener("change", async function () {
+
+    ceramistPrice = await getWorkPrice(this.value);
+
+    console.log("Ceramist Price:", ceramistPrice);
+});
     
 
    // ================================
@@ -875,12 +903,14 @@ document.getElementById("btnSaveCasting")
 
     try {
 
-        // ================================
-        // GET VALUES
-        // ================================
-        const patientId = document.getElementById("patientId").value.trim();
-        const patientName = document.getElementById("patientName").value.trim();
-        const dentist = document.getElementById("dentist").value.trim();
+        const patientId =
+            document.getElementById("patientId").value.trim();
+
+        const patientName =
+            document.getElementById("patientName").value.trim();
+
+        const dentist =
+            document.getElementById("dentist").value.trim();
 
         const techName =
             document.getElementById("castingTech").value;
@@ -889,92 +919,71 @@ document.getElementById("btnSaveCasting")
             document.getElementById("castingType").value;
 
         const unit =
-            document.getElementById("castingNo").value;
+            parseInt(document.getElementById("castingNo").value) || 0;
 
-        // ================================
-        // VALIDATION
-        // ================================
         if (!patientId || isNaN(patientId)) {
-
             alert("Invalid Patient ID");
             return;
         }
 
-        if (!techName || !techWork || !unit) {
-
-            alert("Please select Technician and Work Type");
+        if (!techName || !techWork || unit <= 0) {
+            alert("Please select Technician, Work Type and Unit");
             return;
         }
 
-        // ================================
-        // CALCULATE PRICE
-        // ================================
-        const hitPrices = parseInt(unit) * castingPrice;
+        // Total Price
+        const techPrices = unit * parseFloat(castingPrice || 0);
 
-        // ================================
-        // SERVER IP
-        // ================================
-        const serverIp = localStorage.getItem("serverIp");
-
-        // ================================
-        // SAVE API
-        // ================================
-      const response = await fetch(`${getApiUrl()}/save-casting`,
+        const response = await fetch(
+            `${getAPIBase()}/save_casting.php`,
             {
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
 
-                    appointmentid: patientId,
-                    dentist: dentist,
-                    patient_name: patientName,
+appointmentid: patientId,
+dentist: dentist,
+patient_name: patientName,
 
-                    tech_name: techName,
-                    tech_work: techWork,
+tech_name: techName,
+tech_work: techWork,
 
-                    work_type: "Casting",
+work_type: "Casting",
 
-                    unit: unit,
+unit: unit,
 
-                    status: "InProgress",
+status: "Completed",
 
-                    tech_prices: hitPrices,
+tech_prices: techPrices,
 
-                    work_date: new Date(),
+work_date: new Date()
+    .toISOString()
+    .split("T")[0],
 
-                    serverIp: localStorage.getItem("serverIp"),
-                    database: localStorage.getItem("database"),
-                    dbUser: localStorage.getItem("dbUser"),
-                    dbPassword: localStorage.getItem("dbPassword")
-                })
-            });
+serverIp: localStorage.getItem("serverIp")
+})
+            }
+        );
 
         const data = await response.json();
 
-        // ================================
-        // SUCCESS
-        // ================================
         if (data.success) {
 
             alert("Casting Saved Successfully");
 
-            // OPTIONAL REFRESH
-              // 🔥 REFRESH TABLE
-              const id = new URLSearchParams(window.location.search)
-        .get("patientId");
-           loadTechWorkList(id);
-        }
-        else {
+            const id = new URLSearchParams(window.location.search)
+                .get("patientId");
+
+            await loadTechWork(id);
+
+        } else {
 
             alert(data.message || "Save Failed");
         }
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(error);
 
@@ -990,161 +999,97 @@ document.getElementById("btnSavePreparation")
 
     try {
 
-        // ================================
-        // GET ELEMENTS
-        // ================================
-        const patientIdElement =
-            document.getElementById("patientId");
-
-        const patientNameElement =
-            document.getElementById("patientName");
-
-        const dentistElement =
-            document.getElementById("dentist");
-
-        const prepTechElement =
-            document.getElementById("prepTech");
-
-        const prepTypeElement =
-            document.getElementById("prepType");
-
-        const prepNoElement =
-            document.getElementById("prepNo");
-
-        // ================================
-        // CHECK ELEMENTS
-        // ================================
-        if (!patientIdElement ||
-            !patientNameElement ||
-            !dentistElement ||
-            !prepTechElement ||
-            !prepTypeElement ||
-            !prepNoElement) {
-
-            alert("Some HTML elements are missing");
-            return;
-        }
-
-        // ================================
-        // GET VALUES
-        // ================================
         const patientId =
-            patientIdElement.value.trim();
+            document.getElementById("patientId")?.value.trim();
 
         const patientName =
-            patientNameElement.value.trim();
+            document.getElementById("patientName")?.value.trim();
 
         const dentist =
-            dentistElement.value.trim();
+            document.getElementById("dentist")?.value.trim();
 
         const techName =
-            prepTechElement.value;
+            document.getElementById("prepTech")?.value;
 
         const techWork =
-            prepTypeElement.value;
+            document.getElementById("prepType")?.value;
 
         const unit =
-            prepNoElement.value;
+            parseInt(document.getElementById("prepNo")?.value) || 0;
 
         // ================================
-        // VALIDATE
+        // VALIDATION
         // ================================
         if (!patientId || isNaN(patientId)) {
-
             alert("Invalid Patient ID");
             return;
         }
 
-        if (!techName || !techWork || !unit) {
-
-            alert("Please select Technician and Work Type");
+        if (!techName || !techWork || unit <= 0) {
+            alert("Please select Technician, Work Type and Unit");
             return;
         }
 
         // ================================
-        // CALCULATE PRICE
+        // PRICE CALCULATION
         // ================================
-        const hitPrices =
-            parseInt(unit) * prepPrice;
+        const techPrices = unit * (prepPrice || 0);
 
         // ================================
-        // SERVER
+        // REQUEST
         // ================================
-        const serverIp =
-            localStorage.getItem("serverIp");
-
-        // ================================
-        // SAVE
-        // ================================
-      const response = await fetch(`${getApiUrl()}/save-preparation`,
+        const response = await fetch(
+            `${getAPIBase()}/save_preparation.php`,
             {
-
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
 
                     appointmentid: patientId,
-
                     dentist: dentist,
-
                     patient_name: patientName,
 
                     tech_name: techName,
-
                     tech_work: techWork,
 
                     work_type: "Preparation",
 
                     unit: unit,
 
-                    status: "InProgress",
+                    status: "Completed",
 
-                    tech_prices: hitPrices,
+                    tech_prices: techPrices,
 
-                    work_date: new Date(),
+                    work_date: new Date()
+                        .toISOString()
+                        .split("T")[0],
 
-                    serverIp:
-                        localStorage.getItem("serverIp"),
-
-                    database:
-                        localStorage.getItem("database"),
-
-                    dbUser:
-                        localStorage.getItem("dbUser"),
-
-                    dbPassword:
-                        localStorage.getItem("dbPassword")
+                    serverIp: localStorage.getItem("serverIp")
                 })
-            });
+            }
+        );
 
         const data = await response.json();
 
-        // ================================
-        // RESULT
-        // ================================
         if (data.success) {
 
             alert("Preparation Saved Successfully");
 
-               // 🔥 REFRESH TABLE
-               const id = new URLSearchParams(window.location.search)
-        .get("patientId");
-           loadTechWorkList(id);
-        }
-        else {
+            const id = new URLSearchParams(window.location.search)
+                .get("patientId");
 
+              // refresh table correctly
+    await loadTechWork(id);
+
+        } else {
             alert(data.message || "Save Failed");
         }
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(error);
-
         alert("Error Saving Preparation");
     }
 });
@@ -1157,161 +1102,96 @@ document.getElementById("btnSaveDesign")
 
     try {
 
-        // ================================
-        // GET ELEMENTS
-        // ================================
-        const patientIdElement =
-            document.getElementById("patientId");
-
-        const patientNameElement =
-            document.getElementById("patientName");
-
-        const dentistElement =
-            document.getElementById("dentist");
-
-        const designTechElement =
-            document.getElementById("designTech");
-
-        const designTypeElement =
-            document.getElementById("designType");
-
-        const designNoElement =
-            document.getElementById("designNo");
-
-        // ================================
-        // CHECK ELEMENTS
-        // ================================
-        if (!patientIdElement ||
-            !patientNameElement ||
-            !dentistElement ||
-            !designTechElement ||
-            !designTypeElement ||
-            !designNoElement) {
-
-            alert("Some HTML elements are missing");
-            return;
-        }
-
-        // ================================
-        // GET VALUES
-        // ================================
         const patientId =
-            patientIdElement.value.trim();
+            document.getElementById("patientId")?.value.trim();
 
         const patientName =
-            patientNameElement.value.trim();
+            document.getElementById("patientName")?.value.trim();
 
         const dentist =
-            dentistElement.value.trim();
+            document.getElementById("dentist")?.value.trim();
 
         const techName =
-            designTechElement.value;
+            document.getElementById("designTech")?.value;
 
         const techWork =
-            designTypeElement.value;
+            document.getElementById("designType")?.value;
 
         const unit =
-            designNoElement.value;
+            parseInt(document.getElementById("designNo")?.value) || 0;
 
         // ================================
-        // VALIDATE
+        // VALIDATION
         // ================================
         if (!patientId || isNaN(patientId)) {
-
             alert("Invalid Patient ID");
             return;
         }
 
-        if (!techName || !techWork || !unit) {
-
-            alert("Please select Technician and Work Type");
+        if (!techName || !techWork || unit <= 0) {
+            alert("Please select Technician, Work Type and Unit");
             return;
         }
 
         // ================================
-        // CALCULATE PRICE
+        // PRICE CALCULATION
         // ================================
-        const hitPrices =
-            parseInt(unit) * designPrice;
+        const techPrices = unit * (designPrice || 0);
 
         // ================================
-        // SERVER
+        // REQUEST
         // ================================
-        const serverIp =
-            localStorage.getItem("serverIp");
-
-        // ================================
-        // SAVE
-        // ================================
-       const response = await fetch(`${getApiUrl()}/save-design`,
+        const response = await fetch(
+            `${getAPIBase()}/save_design.php`,
             {
-
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
 
                     appointmentid: patientId,
-
                     dentist: dentist,
-
                     patient_name: patientName,
 
                     tech_name: techName,
-
                     tech_work: techWork,
 
-                    work_type: "Desgin",
+                    work_type: "Design",
 
                     unit: unit,
 
-                    status: "InProgress",
+                    status: "Completed",
 
-                    tech_prices: hitPrices,
+                    tech_prices: techPrices,
 
-                    work_date: new Date(),
+                    work_date: new Date()
+                        .toISOString()
+                        .split("T")[0],
 
-                    serverIp:
-                        localStorage.getItem("serverIp"),
-
-                    database:
-                        localStorage.getItem("database"),
-
-                    dbUser:
-                        localStorage.getItem("dbUser"),
-
-                    dbPassword:
-                        localStorage.getItem("dbPassword")
+                    serverIp: localStorage.getItem("serverIp")
                 })
-            });
+            }
+        );
 
         const data = await response.json();
 
-        // ================================
-        // RESULT
-        // ================================
         if (data.success) {
 
             alert("Design Saved Successfully");
 
-               // 🔥 REFRESH TABLE
-               const id = new URLSearchParams(window.location.search)
-        .get("patientId");
-           loadTechWorkList(id);
-        }
-        else {
+            const id = new URLSearchParams(window.location.search)
+                .get("patientId");
 
+               await loadTechWork(id);
+
+        } else {
             alert(data.message || "Save Failed");
         }
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(error);
-
         alert("Error Saving Design");
     }
 });
@@ -1325,164 +1205,100 @@ document.getElementById("btnSavePreFinish")
 
     try {
 
-        // ================================
-        // GET ELEMENTS
-        // ================================
-        const patientIdElement =
-            document.getElementById("patientId");
-
-        const patientNameElement =
-            document.getElementById("patientName");
-
-        const dentistElement =
-            document.getElementById("dentist");
-
-        const preFinishTechElement =
-            document.getElementById("preFinishTech");
-
-        const preFinishTypeElement =
-            document.getElementById("preFinishType");
-
-        const preFinishNoElement =
-            document.getElementById("preFinishNo");
-
-        // ================================
-        // CHECK ELEMENTS
-        // ================================
-        if (!patientIdElement ||
-            !patientNameElement ||
-            !dentistElement ||
-            !preFinishTechElement ||
-            !preFinishTypeElement ||
-            !preFinishNoElement) {
-
-            alert("Some HTML elements are missing");
-            return;
-        }
-
-        // ================================
-        // GET VALUES
-        // ================================
         const patientId =
-            patientIdElement.value.trim();
+            document.getElementById("patientId")?.value.trim();
 
         const patientName =
-            patientNameElement.value.trim();
+            document.getElementById("patientName")?.value.trim();
 
         const dentist =
-            dentistElement.value.trim();
+            document.getElementById("dentist")?.value.trim();
 
         const techName =
-            preFinishTechElement.value;
+            document.getElementById("preFinishTech")?.value;
 
         const techWork =
-            preFinishTypeElement.value;
+            document.getElementById("preFinishType")?.value;
 
         const unit =
-            preFinishNoElement.value;
+            parseInt(document.getElementById("preFinishNo")?.value) || 0;
 
         // ================================
-        // VALIDATE
+        // VALIDATION
         // ================================
         if (!patientId || isNaN(patientId)) {
-
             alert("Invalid Patient ID");
             return;
         }
 
-        if (!techName || !techWork || !unit) {
-
-            alert("Please select Technician and Work Type");
+        if (!techName || !techWork || unit <= 0) {
+            alert("Please select Technician, Work Type and Unit");
             return;
         }
 
         // ================================
-        // CALCULATE PRICE
+        // PRICE CALCULATION
         // ================================
-        const hitPrices =
-            parseInt(unit) * preFinishPrice;
+        const techPrices = unit * (preFinishPrice || 0);
 
         // ================================
-        // SERVER
+        // REQUEST
         // ================================
-        const serverIp =
-            localStorage.getItem("serverIp");
-
-        // ================================
-        // SAVE
-        // ================================
-        const response = await fetch(`${getApiUrl()}/save-prefinishing`,
+        const response = await fetch(
+            `${getAPIBase()}/save_prefinishing.php`,
             {
-
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
 
                     appointmentid: patientId,
-
                     dentist: dentist,
-
                     patient_name: patientName,
 
                     tech_name: techName,
-
                     tech_work: techWork,
 
                     work_type: "PreFinishing",
 
                     unit: unit,
 
-                    status: "InProgress",
+                    status: "Completed",
 
-                    tech_prices: hitPrices,
+                    tech_prices: techPrices,
 
-                    work_date: new Date(),
+                    work_date: new Date()
+                        .toISOString()
+                        .split("T")[0],
 
-                    serverIp:
-                        localStorage.getItem("serverIp"),
-
-                    database:
-                        localStorage.getItem("database"),
-
-                    dbUser:
-                        localStorage.getItem("dbUser"),
-
-                    dbPassword:
-                        localStorage.getItem("dbPassword")
+                    serverIp: localStorage.getItem("serverIp")
                 })
-            });
+            }
+        );
 
         const data = await response.json();
 
-        // ================================
-        // RESULT
-        // ================================
         if (data.success) {
 
             alert("PreFinishing Saved Successfully");
 
-             // 🔥 REFRESH TABLE
-             const id = new URLSearchParams(window.location.search)
-        .get("patientId");
-           loadTechWorkList(id);
-        }
-        else {
+            const id = new URLSearchParams(window.location.search)
+                .get("patientId");
 
+              await loadTechWork(id);
+
+        } else {
             alert(data.message || "Save Failed");
         }
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(error);
-
         alert("Error Saving PreFinishing");
     }
 });
+
 
 // ================================
 // SAVE FINISHING (CERAMIST)
@@ -1492,73 +1308,77 @@ document.getElementById("btnSaveFinishing")
 
     try {
 
-        const patientIdEl = document.getElementById("patientId");
-const patientNameEl = document.getElementById("patientName");
-const dentistEl = document.getElementById("dentist");
+        const patientId =
+            document.getElementById("patientId")?.value.trim();
 
-const techEl = document.getElementById("ceramistTech"); // FIXED
-const workEl = document.getElementById("ceramistType");
-const unitEl = document.getElementById("finishingNo");
+        const patientName =
+            document.getElementById("patientName")?.value.trim();
 
-        if (!patientIdEl || !patientNameEl || !dentistEl ||
-            !techEl || !workEl || !unitEl) {
+        const dentist =
+            document.getElementById("dentist")?.value.trim();
 
-            alert("Missing HTML elements");
-            return;
-        }
+        const techName =
+            document.getElementById("ceramistTech")?.value;
 
-        const patientId = patientIdEl.value.trim();
-        const patientName = patientNameEl.value.trim();
-        const dentist = dentistEl.value.trim();
+        const techWork =
+            document.getElementById("ceramistType")?.value;
 
-        const techName = techEl.value;
-        const techWork = workEl.value;
-        const unit = unitEl.value;
+        const unit =
+            parseInt(document.getElementById("finishingNo")?.value) || 0;
 
+        // ================================
+        // VALIDATION
+        // ================================
         if (!patientId || isNaN(patientId)) {
             alert("Invalid Patient ID");
             return;
         }
 
-        if (!techName || !techWork || !unit) {
-            alert("Please select Technician and Work Type");
+        if (!techName || !techWork || unit <= 0) {
+            alert("Please select Technician, Work Type and Unit");
             return;
         }
 
-        const hitPrices = parseInt(unit) * ceramistPrice;
+        // ================================
+        // PRICE CALCULATION
+        // ================================
+        const techPrices = unit * (ceramistPrice || 0);
 
-        const serverIp = localStorage.getItem("serverIp");
+        // ================================
+        // REQUEST
+        // ================================
+        const response = await fetch(
+            `${getAPIBase()}/save_finishing.php`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
 
-       const response = await fetch(`${getApiUrl()}/save-finishing`, {
+                    appointmentid: patientId,
+                    dentist: dentist,
+                    patient_name: patientName,
 
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+                    tech_name: techName,
+                    tech_work: techWork,
 
-            body: JSON.stringify({
+                    work_type: "Finishing",
 
-                appointmentid: patientId,
-                dentist: dentist,
-                patient_name: patientName,
+                    unit: unit,
 
-                tech_name: techName,
-                tech_work: techWork,
+                    status: "InProgress",
 
-                work_type: "Ceramist",
+                    tech_prices: techPrices,
 
-                unit: unit,
-                status: "InProgress",
+                    work_date: new Date()
+                        .toISOString()
+                        .split("T")[0],
 
-                tech_prices: hitPrices,
-                work_date: new Date(),
-
-                serverIp: localStorage.getItem("serverIp"),
-                database: localStorage.getItem("database"),
-                dbUser: localStorage.getItem("dbUser"),
-                dbPassword: localStorage.getItem("dbPassword")
-            })
-        });
+                    serverIp: localStorage.getItem("serverIp")
+                })
+            }
+        );
 
         const data = await response.json();
 
@@ -1566,12 +1386,12 @@ const unitEl = document.getElementById("finishingNo");
 
             alert("Finishing Saved Successfully");
 
-            // 🔥 REFRESH TABLE
             const id = new URLSearchParams(window.location.search)
-        .get("patientId");
-           loadTechWorkList(id);
-        }
-        else {
+                .get("patientId");
+
+               await loadTechWork(id);
+
+        } else {
             alert(data.message || "Save Failed");
         }
 
@@ -1584,247 +1404,139 @@ const unitEl = document.getElementById("finishingNo");
 
 
 /////// BUTTON COMPLETED ///////
-document.getElementById("btnComplete").addEventListener("click", async function () {
+document.getElementById("btnComplete")
+.addEventListener("click", async function () {
 
-const patientId = document.getElementById("patientId").value;
-const serverIp = localStorage.getItem("serverIp");
-
-if (!patientId) {
-    alert("Please enter Patient ID");
-    return;
-}
-
-if (!serverIp) {
-    alert("Server IP not found");
-    return;
-}
-
-try {
-
-    // =========================
-    // 1. COMPLETE PATIENT
-    // =========================
-   const response = await fetch(`${getApiUrl()}/complete-patient`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ appointmentid: patientId })
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-        alert("Update failed");
-        return;
-    }
-
-    // =========================
-    // 2. UPDATE APPOINTMENT TABLE
-    // =========================
-   await fetch(`${getApiUrl()}/update-appointment-status`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            id2: patientId,
-            status: "Complete",
-            serverIp,
-            database: localStorage.getItem("database"),
-            dbUser: localStorage.getItem("dbUser"),
-            dbPassword: localStorage.getItem("dbPassword")
-        })
-    });
-
-    // =========================
-    // 3. GET PRINT DATA
-    // =========================
-    const patientName = document.getElementById("patientName").value;
-    const dentist = document.getElementById("dentist").value;
-    const dentistNo = document.getElementById("dentistNo").value;
-    const receiveDate = document.getElementById("receiveDate").value;
-
-    const labSettings = JSON.parse(localStorage.getItem("labSettings")) || {};
-    const labName = labSettings.labName || "AurumLab";
-    const logo = labSettings.labLogo || "";
-
-    const printDate = new Date().toLocaleString();
-
-    // QR URL
-    const qrUrl = `https://admirable-pastelito-c13624.netlify.app/?id=${patientId}`;
-
-    // =========================
-    // 4. GENERATE QR SAFELY
-    // =========================
-    const tempDiv = document.createElement("div");
-
-    new QRCode(tempDiv, {
-        text: qrUrl,
-        width: 120,
-        height: 120
-    });
-
-    // wait for QR rendering
-    await new Promise(resolve => setTimeout(resolve, 400));
-
-    const qrHtml = tempDiv.innerHTML;
-
-    // =========================
-    // 5. PRINT WINDOW
-    // =========================
-    const printWindow = window.open("", "_blank");
-
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Lab Label</title>
-
-            <style>
-                @page {
-                    size: 80mm 120mm;
-                    margin: 5mm;
-                }
-
-                body {
-                    font-family: Arial;
-                    margin: 0;
-                    padding: 0;
-                    display: flex;
-                    justify-content: center;
-                    align-items: flex-start;
-                }
-
-                .card {
-                    width: 100%;
-                    border: 1.5px solid #D4AF37;
-                    border-radius: 10px;
-                    padding: 10px;
-                    text-align: center;
-                }
-
-                .logo {
-                    width: 45px;
-                    height: 45px;
-                    border-radius: 50%;
-                }
-
-                .lab-name {
-                    font-size: 14px;
-                    font-weight: bold;
-                    color: #D4AF37;
-                }
-
-                .qr {
-                    margin: 10px 0;
-                    display: flex;
-                    justify-content: center;
-                }
-
-                .info {
-                    text-align: left;
-                    font-size: 11px;
-                    line-height: 1.5;
-                }
-
-                .footer {
-                    font-size: 9px;
-                    color: gray;
-                    margin-top: 5px;
-                }
-            </style>
-        </head>
-
-        <body onload="window.print()">
-
-            <div class="card">
-
-                <div>
-                    ${logo ? `<img src="${logo}" class="logo"/>` : ""}
-                    <div class="lab-name">${labName}</div>
-                </div>
-
-                <div class="qr">
-                    ${qrHtml}
-                </div>
-
-                <div class="info">
-                    <b>ID:</b> ${patientId}<br>
-                    <b>Name:</b> ${patientName}<br>
-                    <b>Dentist:</b> ${dentist}<br>
-                    <b>Tel:</b> ${dentistNo}<br>
-                    <b>Receive:</b> ${receiveDate}<br>
-                    <b>Print:</b> ${printDate}
-                </div>
-
-                <div class="footer">
-                    AurumLab System
-                </div>
-
-            </div>
-
-        </body>
-        </html>
-    `);
-
-    printWindow.document.close();
-
-    // =========================
-    // 6. UI UPDATE
-    // =========================
-    document.getElementById("btnComplete").innerText = "Completed ✓";
-    document.getElementById("btnComplete").disabled = true;
-
-} catch (error) {
-    console.error(error);
-    alert("Server not reachable");
-}
-});
-
-/////// delete button /////////////
-document.getElementById("techWorkBody").addEventListener("click", async function (e) {
-
-if (!e.target.classList.contains("delete-btn")) return;
-
-const row = e.target.closest("tr");
-
-const idText = row.querySelector(".db-id").innerText.trim();
-const id = Number(idText);
-
-if (!id || isNaN(id)) {
-    alert("Invalid ID");
-    return;
-}
-
-if (!confirm("Delete this row?")) return;
-
-try {
+    const patientId =
+        document.getElementById("patientId")?.value.trim();
 
     const serverIp = localStorage.getItem("serverIp");
 
-   const response = await fetch(`${getApiUrl()}/delete-tech-work`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id })
-    });
-
-    const result = await response.json();
-
-    console.log(result);
-
-    if (result.success) {
-
-        const patientId = new URLSearchParams(window.location.search)
-            .get("patientId");
-
-        loadTechWorkList(patientId);
-
-    } else {
-        alert(result.error || "Delete failed");
+    if (!patientId) {
+        alert("Please enter Patient ID");
+        return;
     }
 
-} catch (err) {
-    console.log(err);
-    alert("Server error");
-}
-});
+    if (!serverIp) {
+        alert("Server IP not found");
+        return;
+    }
 
+    try {
+
+        // =========================
+        // ONLY ONE CALL (AUTO CHECK + UPDATE)
+        // =========================
+        const response = await fetch(
+            `${getAPIBase()}/auto_complete_appointment.php`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    appointmentid: patientId,
+                    serverIp
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            alert(data.message || "Update failed");
+            return;
+        }
+
+        // =========================
+        // PRINT DATA
+        // =========================
+        const patientName = document.getElementById("patientName").value;
+        const dentist = document.getElementById("dentist").value;
+        const dentistNo = document.getElementById("dentistNo").value;
+        const receiveDate = document.getElementById("receiveDate").value;
+
+        const labSettings =
+            JSON.parse(localStorage.getItem("labSettings")) || {};
+
+        const labName = labSettings.labName || "AurumLab";
+        const logo = labSettings.labLogo || "";
+
+        const printDate = new Date().toLocaleString();
+
+        const qrUrl =
+            `https://rad1997.github.io/AurumLab/?id=${patientId}`;
+
+        const tempDiv = document.createElement("div");
+
+        new QRCode(tempDiv, {
+            text: qrUrl,
+            width: 120,
+            height: 120
+        });
+
+        await new Promise(r => setTimeout(r, 400));
+
+        const qrHtml = tempDiv.innerHTML;
+
+        const printWindow = window.open("", "_blank");
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Lab Label</title>
+                <style>
+                    @page { size: 80mm 120mm; margin: 5mm; }
+                    body { font-family: Arial; margin: 0; }
+                    .card {
+                        border: 1.5px solid #D4AF37;
+                        padding: 10px;
+                        text-align: center;
+                    }
+                    .logo { width: 45px; height: 45px; border-radius: 50%; }
+                    .lab-name { font-weight: bold; color: #D4AF37; }
+                    .qr { margin: 10px 0; display:flex; justify-content:center; }
+                    .info { text-align:left; font-size:11px; }
+                </style>
+            </head>
+
+            <body onload="window.print()">
+
+                <div class="card">
+
+                    ${logo ? `<img src="${logo}" class="logo"/>` : ""}
+
+                    <div class="lab-name">${labName}</div>
+
+                    <div class="qr">${qrHtml}</div>
+
+                    <div class="info">
+                        <b>ID:</b> ${patientId}<br>
+                        <b>Name:</b> ${patientName}<br>
+                        <b>Dentist:</b> ${dentist}<br>
+                        <b>Tel:</b> ${dentistNo}<br>
+                        <b>Receive:</b> ${receiveDate}<br>
+                        <b>Print:</b> ${printDate}
+                    </div>
+
+                </div>
+
+            </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+
+        // =========================
+        // UI UPDATE
+        // =========================
+        const btn = document.getElementById("btnComplete");
+        btn.innerText = "Completed ✓";
+        btn.disabled = true;
+
+    } catch (error) {
+        console.error(error);
+        alert("Server not reachable");
+    }
+});
 ///////////// printing
 
 

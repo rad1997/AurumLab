@@ -532,17 +532,14 @@ body{
         
                    <input type="text"
                    id="dbUser"
-                   value="sa"
                    placeholder="dbUser">
 
-                   <input type="password"
+                   <input type="text"
                    id="dbPassword"
-                   value="2412"
                    placeholder="dbPassword">
 
                    <input type="text"
                    id="database"
-                   value="ServerLabDB"
                    placeholder="database name">
 
 
@@ -565,39 +562,7 @@ body{
     <!-- JAVASCRIPT -->
     <script>
 
-document.addEventListener("DOMContentLoaded", () => {
-
-const params = new URLSearchParams(window.location.search);
-
-const patientId = params.get("id");
-
-
-
-const txtPatient = document.getElementById("PatientId");
-
-if (txtPatient && patientId) {
-    txtPatient.value = patientId;
-}
-
-});
-
-
-
         function toggleSettings() {
-
-                // Restore saved values
-    document.getElementById("serverIp").value =
-        localStorage.getItem("serverIp") || "";
-
-    document.getElementById("dbUser").value =
-        localStorage.getItem("dbUser") || "sa";
-
-    document.getElementById("dbPassword").value =
-        localStorage.getItem("dbPassword") || "2412";
-
-    document.getElementById("database").value =
-        localStorage.getItem("database") || "ServerLabDB";
-        
             let panel = document.getElementById("settingsPanel");
         
             if (panel.classList.contains("show")) {
@@ -704,7 +669,7 @@ try {
     }
 
     try {
-        const response = await fetch(`http://${serverIp}/web%20Aurumlab/api/login.php`, {
+        const response = await fetch("api/login.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

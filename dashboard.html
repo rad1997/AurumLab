@@ -505,18 +505,15 @@ if (patientId) {
     });
 
     // Hide Price column header
-    document.querySelectorAll("table th").forEach(th => {
-        if (th.textContent.trim() === "Price") {
-            th.style.display = "none";
-        }
-    });
+   // Hide column 2 (Tech Name)
+    document.querySelectorAll(
+        "#techWorkTable th:nth-child(2), #techWorkTable td:nth-child(2)"
+    ).forEach(el => el.style.display = "none");
 
-
-    document.querySelectorAll("table th").forEach(th => {
-        if (th.textContent.trim() === "Tech Name") {
-            th.style.display = "none";
-        }
-    });
+    // Hide column 5 (Price)
+    document.querySelectorAll(
+        "#techWorkTable th:nth-child(5), #techWorkTable td:nth-child(5)"
+    ).forEach(el => el.style.display = "none");
 
 
 }
